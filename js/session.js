@@ -33,6 +33,7 @@ Session.prototype.join = function( user_id, is_caller ){
 		this.fb_session.onDisconnect().remove();
 		//--liste for joins
 		this.fb_session.child('user').on( 'child_added', this.fb_joinEvent );	
+		this.fb_session.child('user').on( 'child_removed', this.fb_leaveEvent );			
 		this.fb_session.child('user').child( this.local_user_id  ).child( 'answer').on( 'value', this.fb_answerEvent );			
 	}else{
 	
@@ -41,8 +42,14 @@ Session.prototype.join = function( user_id, is_caller ){
 	}
 }
 
-var fromHack;
+Session.prototype.leave = function(){	
+	console.log( 'Session::leave: ' + this.local_user_id );	
+	
+	//-- unreigster our user
+	this.fb_session.child('user').child( this.local_user_id ).remove();	
+}
 
+var fromHack;
 
 //-- as a callee we got an offer from an caller, respond to it
 Session.prototype.fb_offerEvent = function( snapshot ){	
@@ -93,6 +100,18 @@ Session.prototype.fb_joinEvent = function( snapshot ){
 	}
 	
 	g_session.create_and_send_offer( snapshot.name() );	
+}
+
+//-- as a caller we receive an event that a calle has joined
+Session.prototype.fb_leaveEvent = function( snapshot ){	
+
+	if( snapshot.name() === g_session.local_user_id ){
+		return;
+	}
+	
+	var remote_video = document.getElementById("remote_video_stream");
+	remote_video.src = 0;
+	remote_video.hidden=true;
 }
 
 var toHack;

@@ -13,18 +13,27 @@ function trackEvent( cat, key, val )
 	ga( 'send', 'event', cat, key, val ); 
 }
 
+var hack_currentRemoteStreamId=0;
+
 function onRemoteStreamRemoved ( stream )
 {
-	console.log( 'onRemoteStreamRemoved ' );
+	if( stream.stream.id != hack_currentRemoteStreamId ){
+		return;
+	}
+
+	console.log( 'onRemoteStreamRemoved ' + stream.stream.id );
 	var remote_video = document.getElementById("remote_video_stream");
 	remote_video.src = 0;
+	remote_video.hidden=true;
 }
 
 function onRemoteStreamAdded( stream )
 {
-	console.log( 'onRemoteStreamAdded' );
+	console.log( 'onRemoteStreamAdded' + stream.stream.id );
 	var remote_video = document.getElementById("remote_video_stream");
-	remote_video.src = URL.createObjectURL(stream.stream);	
+	remote_video.src = URL.createObjectURL(stream.stream);
+	remote_video.hidden=false;	
+	hack_currentRemoteStreamId = stream.stream.id;
 }
 
 function onSignalingStateChanged( event )

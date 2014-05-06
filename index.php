@@ -47,6 +47,7 @@ if( !window.location.search.length ){
 var g_local_id  = guid();
 var g_iceCache  = [];
 var g_peer_connection = createPeerConnection();
+var g_local_media_track = 0;
 var g_session   = new Session( window.location.search, g_peer_connection );	
 var fb = createFireBaseSession();		
 
@@ -56,7 +57,8 @@ fb.child( window.location.search ).once( 'value', function( snapshot ) {
 	trackEvent( 'getUserMedia', 'before', g_local_id );
 		
 	getUserMedia(pc_media_options, function (stream) {	
-		trackEvent( 'getUserMedia', 'after - success', g_local_id );	
+		trackEvent( 'getUserMedia', 'after - success', stream.id );	
+		g_local_media_track = stream;
 		var video = document.getElementById("local_video_stream");
 		video.src = URL.createObjectURL(stream);
 		g_peer_connection.addStream( stream );		
@@ -67,6 +69,9 @@ fb.child( window.location.search ).once( 'value', function( snapshot ) {
 });
 
 $( window ).unload(function() {
+	g_peer_connection.removeStream( g_local_media_track );
+	g_local_media_track = 0;
+	g_session.leave();
 	g_peer_connection.close();
 });
 
@@ -110,7 +115,7 @@ $( window ).unload(function() {
 	</div>
 
 	<div id="remote_video" class="col-md-6"  >
-		<video id="remote_video_stream" controls  autoplay></video> 
+		<video hidden="true" id="remote_video_stream" controls  autoplay></video> 
 	</div>
 	
 	</div>
