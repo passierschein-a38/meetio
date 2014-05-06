@@ -1,13 +1,12 @@
 
-function Session( id, pc ){
-	
+function Session( id, pc ){	
 	console.log( 'Session:: create new: ' + id );	
 	
 	this.pc = pc;
 	this.session_id = id;		
 	this.local_user_id = id;		
-	this.fb_session = new Firebase('https://sizzling-fire-7348.firebaseio.com/sessions/' + this.session_id );		
-	
+	var fb = createFireBaseSession();
+	this.fb_session = fb.child( this.session_id );			
 }
 
 Session.prototype.pc = 0;
