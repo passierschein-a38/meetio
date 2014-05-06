@@ -59,7 +59,7 @@ function handle_fb_icecandiate( snapshot )
 
 function createFireBaseSession()
 {
-	var fb_session = new Firebase('https://sizzling-fire-7348.firebaseio.com/session/shopwerkstatt/');
+	var fb_session = new Firebase( 'https://' + env_fb_db + '.firebaseio.com/sessions/' );
 	return fb_session;
 }
 
@@ -78,4 +78,3 @@ function createFireBaseUser( session, id )
 			
 	return fb_user;
 }
-

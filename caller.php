@@ -1,19 +1,20 @@
 <html>
 <head>
-<title>WEBRTC SAMPLE VIDEO</title>
+<title>Meetio - Easy Simple Online Meeting</title>
 <script type='text/javascript' src='http://code.jquery.com/jquery-latest.min.js'></script>
 <script type='text/javascript' src='https://cdn.firebase.com/js/client/1.0.11/firebase.js'></script>
-<script type='text/javascript' src='adapter.js'></script>
-<script type='text/javascript' src='functions.js'></script>
-<script type='text/javascript' src='media.js'></script>
-<script type='text/javascript' src='session.js'></script>
+<script type='text/javascript' src='js/config.php'></script>
+<script type='text/javascript' src='js/adapter.js'></script>
+<script type='text/javascript' src='js/functions.js'></script>
+<script type='text/javascript' src='js/media.js'></script>
+<script type='text/javascript' src='js/session.js'></script>
 </head>
 <body>
-<script type="text/javascript">		
-
+<script type="text/javascript">
+	
 if( !window.location.search.length ){		
-	alert( 'no session found' );
-	return;
+		window.location.search = guid();
+		return;
 }
 
 var g_local_id  = guid();
@@ -26,10 +27,12 @@ getUserMedia(pc_media_options, function (stream) {
 		var video = document.getElementById("local_video_stream");
 		video.src = URL.createObjectURL(stream);
 		g_peer_connection.addStream( stream );		
+
 		//ready to join session, all media is setup		
-		g_session.join( g_local_id, false );		
+		g_session.join( g_local_id, true );
+		
 	}, pc_console_handler);
-	
+
 </script>	
 
 	<div id="local_video">
@@ -39,6 +42,10 @@ getUserMedia(pc_media_options, function (stream) {
 	<div id="remote_video">
 		<video id="remote_video_stream" controls  autoplay></video>
 	</div>
+
+<?php
+include 'ga.php';
+?>
 	
 </body>
 </html>

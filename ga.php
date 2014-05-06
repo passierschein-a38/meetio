@@ -1,5 +1,5 @@
 <?php
-if( isset( $_ENV['PRODUCTION'] ) ){
+if( isset( $_ENV['USE_GA'] ) ){
 ?>
 <script>
   (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
