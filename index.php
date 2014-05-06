@@ -39,10 +39,10 @@ fb.child( window.location.search ).once( 'value', function( snapshot ) {
 	}
 });
 </script>
+
 <?php
-if( isset( $_ENV['PRODUCTION'] ) ){
-	echo '<script type=\'text/javascript\' src=\'ga.js\'></script>';
-}
-?>	
+include 'ga.php';
+?>
+
 </body>
 </html>
