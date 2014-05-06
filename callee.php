@@ -5,6 +5,7 @@
 <script type='text/javascript' src='https://cdn.firebase.com/js/client/1.0.11/firebase.js'></script>
 <script type='text/javascript' src='js/config.php'></script>
 <script type='text/javascript' src='js/adapter.js'></script>
+<script type='text/javascript' src='js/firebase.js'></script>
 <script type='text/javascript' src='js/functions.js'></script>
 <script type='text/javascript' src='js/media.js'></script>
 <script type='text/javascript' src='js/session.js'></script>
