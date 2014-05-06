@@ -24,8 +24,11 @@ fb.child( window.location.search ).once( 'value', function( snapshot ) {
 		window.location.href = 'http://localhost/webrtc/multi_fastsupport/callee.html' + window.location.search;
 	}
 });
-
 </script>
-	
+<?php
+if( isset( $_ENV['PRODUCTION'] ) ){
+	echo '<script type=\'text/javascript\' src=\'ga.js\'></script>';
+}
+?>	
 </body>
 </html>
