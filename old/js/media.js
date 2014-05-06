@@ -10,8 +10,8 @@ var pc_constraints = {
 };
 
 var pc_media_options = {
-	audio: true,
-    video: true
+    video: true,
+    audio: true
 };
 
 function onIceCandidate( event )
