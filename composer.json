@@ -1,0 +1,15 @@
+{
+    "name":             "sauerhoefer/meetio",
+    "description":      "Simple Online Video Meeting",
+    "keywords":         ["meeting", "video", "meetio", "simple"],
+    "homepage":         "http://meetio.de/",
+    "time":             "2014-05-05",
+    "authors": [
+        {
+            "name":         "Axel Sauerhoefer",
+            "email":        "sauerhoefer@shop-werkstatt.com",
+            "homepage":     "http://shop-werkstatt.com",
+            "role":         "The Dude"
+        }
+    ]
+}
