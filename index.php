@@ -19,14 +19,16 @@
     <!-- Add custom CSS here -->
     <link href="css/landing-page.css" rel="stylesheet">
 	
+	
+	<script type='text/javascript' src='http://cdn.firebase.com/js/client/1.0.11/firebase.js'></script>
 	<script type='text/javascript' src="js/jquery-1.10.2.js"></script>
-	<script type='text/javascript' src='https://cdn.firebase.com/js/client/1.0.11/firebase.js'></script>
 	<script type='text/javascript' src='js/config.php'></script>
 	<script type='text/javascript' src='js/adapter.js'></script>
-	<script type='text/javascript' src='js/firebase.js'></script>
 	<script type='text/javascript' src='js/functions.js'></script>
 	<script type='text/javascript' src='js/media.js'></script>
 	<script type='text/javascript' src='js/session.js'></script>
+	<script type='text/javascript' src='js/peerconnection.js'></script>
+	<script type='text/javascript' src='js/application.js'></script>
 
 </head>
 
@@ -42,37 +44,14 @@ if( !window.location.search.length ){
 		window.location.search = guid();		
 }
 
+//init with guid as peer name
+var g_app = new Application( guid() );
 
+//run with session id
+g_app.run( window.location.search );
 
-var g_local_id  = guid();
-var g_iceCache  = [];
-var g_peer_connection = createPeerConnection();
-var g_local_media_track = 0;
-var g_session   = new Session( window.location.search, g_peer_connection );	
-var fb = createFireBaseSession();		
-
-fb.child( window.location.search ).once( 'value', function( snapshot ) {
-	
-	var caller = ( snapshot.val() == null );	
-	trackEvent( 'getUserMedia', 'before', g_local_id );
-		
-	getUserMedia(pc_media_options, function (stream) {	
-		trackEvent( 'getUserMedia', 'after - success', stream.id );	
-		g_local_media_track = stream;
-		var video = document.getElementById("local_video_stream");
-		video.src = URL.createObjectURL(stream);
-		g_peer_connection.addStream( stream );		
-		g_session.join( g_local_id, caller );		
-	}, function( error ) {		
-		trackEvent( 'getUserMedia', 'after - failed: ' + error.name, g_local_id );		
-	});		
-});
-
-$( window ).unload(function() {
-	g_peer_connection.removeStream( g_local_media_track );
-	g_local_media_track = 0;
-	g_session.leave();
-	g_peer_connection.close();
+$( window ).unload(function() {	
+	g_app.stop();
 });
 
 </script>

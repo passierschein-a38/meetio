@@ -13,12 +13,3 @@ var pc_media_options = {
 	audio: true,
     video: true
 };
-
-function onIceCandidate( event )
-{
-	if( event.candidate === null ){		
-		return;
-	}
-
-	g_iceCache.push( JSON.stringify( event.candidate ) );
-}
