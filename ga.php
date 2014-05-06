@@ -9,8 +9,15 @@ if( isset( $_ENV['USE_GA'] ) ){
 
   ga('create', 'UA-50708752-1', 'meetio.herokuapp.com');
   ga('send', 'pageview');
-
 </script>
 <?php	
+}else{
+?>
+<script>
+  function ga(i,s,o,g,r,a,m){
+	console.log( i+ ' ' + s + ' ' + o + ' ' + g + ' ' + r );
+ }
+ </script>
+ <?php
 }
 ?>	

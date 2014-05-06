@@ -8,7 +8,10 @@ function guid() {
          s4() + '-' + s4() + s4() + s4();
 }
 
-
+function trackEvent( cat, key, val )
+{
+	ga( 'send', 'event', cat, key, val ); 
+}
 
 function onRemoteStreamRemoved ( stream )
 {

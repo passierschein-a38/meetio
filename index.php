@@ -11,6 +11,10 @@
 <script type='text/javascript' src='js/session.js'></script>
 </head>
 <body>
+<?php
+include 'ga.php';
+?>
+
 <script type="text/javascript">
 	
 if( !window.location.search.length ){		
@@ -26,15 +30,18 @@ var fb = createFireBaseSession();
 
 fb.child( window.location.search ).once( 'value', function( snapshot ) {
 	
-	var caller = ( snapshot.val() == null );
-	console.log( 'is caller: ' + caller );
+	var caller = ( snapshot.val() == null );	
+	trackEvent( 'getUserMedia', 'before' );
 		
-	getUserMedia(pc_media_options, function (stream) {
+	getUserMedia(pc_media_options, function (stream) {	
+		trackEvent( 'getUserMedia', 'after - success' );	
 		var video = document.getElementById("local_video_stream");
 		video.src = URL.createObjectURL(stream);
 		g_peer_connection.addStream( stream );		
 		g_session.join( g_local_id, caller );		
-	}, pc_console_handler);	
+	}, function( error ) {		
+		trackEvent( 'getUserMedia', 'after - failed', error.name );		
+	});		
 });
 
 </script>
@@ -46,9 +53,6 @@ fb.child( window.location.search ).once( 'value', function( snapshot ) {
 	<div id="remote_video">
 		<video id="remote_video_stream" controls  autoplay></video>
 	</div>
-<?php
-include 'ga.php';
-?>
 	
 </body>
 </html>
