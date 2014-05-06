@@ -42,6 +42,8 @@ if( !window.location.search.length ){
 		window.location.search = guid();		
 }
 
+
+
 var g_local_id  = guid();
 var g_iceCache  = [];
 var g_peer_connection = createPeerConnection();
@@ -51,17 +53,21 @@ var fb = createFireBaseSession();
 fb.child( window.location.search ).once( 'value', function( snapshot ) {
 	
 	var caller = ( snapshot.val() == null );	
-	trackEvent( 'getUserMedia', 'before' );
+	trackEvent( 'getUserMedia', 'before', g_local_id );
 		
 	getUserMedia(pc_media_options, function (stream) {	
-		trackEvent( 'getUserMedia', 'after - success' );	
+		trackEvent( 'getUserMedia', 'after - success', g_local_id );	
 		var video = document.getElementById("local_video_stream");
 		video.src = URL.createObjectURL(stream);
 		g_peer_connection.addStream( stream );		
 		g_session.join( g_local_id, caller );		
 	}, function( error ) {		
-		trackEvent( 'getUserMedia', 'after - failed', error.name );		
+		trackEvent( 'getUserMedia', 'after - failed: ' + error.name, g_local_id );		
 	});		
+});
+
+$( window ).unload(function() {
+	g_peer_connection.close();
 });
 
 </script>
