@@ -1,4 +1,5 @@
 <?php
+
 $session_id = uniqid();
 $user_id 	= uniqid();
 $env_base_url 	= isset( $_ENV['BASE_URL'] ) ? $_ENV['BASE_URL'] 	: 'http://localhost/meetio';
