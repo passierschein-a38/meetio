@@ -23,6 +23,11 @@ Application.prototype.run = function( session_id ){
 		g_app.is_caller = ( snapshot.val() == null );	
 		trackEvent( 'getUserMedia', 'before', g_app.peer_name );
 		
+		var pc_media_options = {
+				audio: true,
+				video: true
+		};
+		
 		getUserMedia(pc_media_options, function (stream) {	
 			trackEvent( 'getUserMedia', 'after - success', stream.id );			
 			

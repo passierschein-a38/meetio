@@ -22,11 +22,10 @@
 	<script type='text/javascript' src="template/js/jquery-1.10.2.js"></script>
 	<script type='text/javascript' src="template/js/bootstrap.js"></script>
 	
-	<script type='text/javascript' src='http://cdn.firebase.com/js/client/1.0.11/firebase.js'></script>
+	<script type='text/javascript' src='js/firebase-1.0.11.js'></script>
 	<script type='text/javascript' src='js/config.php'></script>
 	<script type='text/javascript' src='js/adapter.js'></script>
-	<script type='text/javascript' src='js/functions.js'></script>
-	<script type='text/javascript' src='js/media.js'></script>
+	<script type='text/javascript' src='js/track.js'></script>
 	<script type='text/javascript' src='js/session.js'></script>
 	<script type='text/javascript' src='js/peerconnection.js'></script>
 	<script type='text/javascript' src='js/application.js'></script>
@@ -84,6 +83,14 @@ $( window ).unload(function() {
 
         <div class="container-full">
 
+		<div class="row">
+			<div id="local_name" class="col-md-6" >
+				<?php echo $user_id ?>
+			</div>
+			<div id="remote_user" class="col-md-6" >				
+			</div>
+		</div>
+		
     <div class="row">						
 					   
     <div id="local_video" class="col-md-6" >

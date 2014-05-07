@@ -12,6 +12,13 @@ function PeerConnection( peer_name ){
 	this.remote_media_stream = 0;
 	this.pc_name = peer_name;
 	this.ice_cache = [];
+	
+	this.pc_constraints = {
+		mandatory: {
+			OfferToReceiveAudio: true,
+			OfferToReceiveVideo: true
+		}
+	};
 }
 
 PeerConnection.prototype.pc = 0;
@@ -19,6 +26,7 @@ PeerConnection.prototype.local_media_track = 0;
 PeerConnection.prototype.remote_media_stream = 0;
 PeerConnection.prototype.ice_cache = [];
 PeerConnection.prototype.pc_name = 0;
+PeerConnection.prototype.pc_constraints = 0;
 
 
 PeerConnection.prototype.onIceCandidate = function( event ){	
@@ -35,8 +43,7 @@ PeerConnection.prototype.onRemoteStreamAdded = function( event ){
 	g_app.pc.remote_media_stream = event.stream;
 	var remote_video = document.getElementById("remote_video_stream");
 	remote_video.src = URL.createObjectURL(event.stream);
-	remote_video.hidden=false;		
-	
+	remote_video.hidden=false;			
 }
 
 PeerConnection.prototype.onRemoteStreamRemoved = function( event ){	

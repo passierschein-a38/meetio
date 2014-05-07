@@ -1,9 +1,22 @@
+var guid = (function() {
+  function s4() {
+    return Math.floor((1 + Math.random()) * 0x10000)
+               .toString(16)
+               .substring(1);
+  }
+  return function() {
+    return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
+           s4() + '-' + s4() + s4() + s4();
+  };
+})();
+
 function Session( session_id ){	
 	
 	trackEvent( 'session', 'create', session_id );	
 	
 	this.session_id = session_id		
-	this.local_user_id = 0;		
+	this.local_user_id  = guid();		
+	this.local_user_name = 0;		
 	var fb = new Firebase( 'https://' + env_fb_db + '.firebaseio.com/sessions/' );
 	this.fb_session = fb.child( this.session_id );	
 	
@@ -18,14 +31,15 @@ Session.prototype.fb_session = 0;
 Session.prototype.from_hack = 0;
 Session.prototype.to_hack = 0;
 
-Session.prototype.join = function( user_id, is_caller ){	
+Session.prototype.join = function( user_name, is_caller ){	
 
-	this.local_user_id = user_id;
+	this.local_user_name = user_name;
 
 	trackEvent( 'session', 'join', this.local_user_id + ' isCaller: ' + is_caller );	
 		
 	//-- register our user
-	this.fb_session.child('user').child( this.local_user_id ).child( 'starttime' ).set( Date.now() );
+	//this.fb_session.child('user').child( this.local_user_id ).child( 'starttime' ).set( Date.now() );
+	this.fb_session.child('user').child( this.local_user_id ).child( 'name' ).set( this.local_user_name );
 	this.fb_session.child('user').child( this.local_user_id ).onDisconnect().remove();
 	this.fb_session.child('user').child( this.local_user_id  ).child( 'ice').on( 'child_added', this.fb_ice_event );	
 	
@@ -61,6 +75,8 @@ Session.prototype.fb_offerEvent = function( snapshot ){
 	var offer = JSON.parse( snapshot.val() );
 	g_app.session.from_hack = offer.from;
 	
+	$("#remote_user").html(offer.name);
+	
 	trackEvent( 'session', 'received-offer', g_app.session.from_hack );	
 	
 	g_app.pc.setRemoteDescription( new RTCSessionDescription( offer.desc ) );
@@ -74,12 +90,12 @@ Session.prototype.fb_offerEvent = function( snapshot ){
 		var a = new Object();
 		a.answer = answer;
 		a.from   = g_app.session.local_user_id;
-		
+				
 		var json = JSON.stringify(a);			
 		
 		g_app.session.fb_session.child( 'user' ).child( g_app.session.from_hack ).child( 'answer' ).set( json );					
 		g_app.session.fb_session.child( 'user' ).child( g_app.session.from_hack ).child( 'answer' ).onDisconnect().remove();
-    }, pc_console_handler, pc_constraints );
+    }, generic_error_handler, g_app.pc.pc_constraints );
 }
 
 //-- as a callee we got an offer from an caller, respond to it
@@ -114,7 +130,10 @@ Session.prototype.fb_joinEvent = function( snapshot ){
 	}
 
 	trackEvent( 'session', 'join', snapshot.name() ); 	
-		
+	trackEvent( 'session', 'join-name', snapshot.val().name ); 	
+	
+	$("#remote_user").html(snapshot.val().name);
+			
 	g_app.session.create_and_send_offer( snapshot.name() );	
 }
 
@@ -170,10 +189,11 @@ Session.prototype.create_and_send_offer = function( to ){
 
 		var offer = new Object();
 		offer.desc = sessionDescription;
-		offer.from = g_app.session.local_user_id;		
+		offer.from = g_app.session.local_user_id;	
+		offer.name = g_app.peer_name;
 		var json = JSON.stringify( offer );		
 		
 		g_app.session.fb_session.child( 'user' ).child( g_app.session.to_hack ).child( 'offer' ).set( json );		
 		
-	}, pc_console_handler, pc_constraints );	
+	}, generic_error_handler, g_app.pc.pc_constraints );	
 }
