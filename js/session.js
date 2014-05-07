@@ -12,29 +12,6 @@ Session.prototype.session_id = 0;
 Session.prototype.isCaller 	 = 0;
 Session.prototype.fb_session = 0;
 
-Session.prototype.start = function(){
-
-	//-- get a refernece to the session nodes
-	var fb_session_root = new Firebase( 'https://' + env_fb_db + '.firebaseio.com/sessions/' );
-
-	//-- check if session already exists
-	fb_session_root.child( this.session_id ).once( 'value', function( snapshot ) {
-	
-		var caller = ( snapshot.val() == null );	
-		trackEvent( 'getUserMedia', 'before', g_app.pc.getPeerName() );
-		
-		getUserMedia(pc_media_options, function (stream) {	
-			trackEvent( 'getUserMedia', 'after - success', stream.id );			
-			var video = document.getElementById("local_video_stream");
-			video.src = URL.createObjectURL(stream);
-			g_app.pc.addStream( stream );		
-			g_app.session.join( g_app.pc.getPeerName() , caller );		
-		}, function( error ) {		
-			trackEvent( 'getUserMedia', 'after - failed: ' + error.name, g_app.pc.getPeerName() );		
-		});		
-	});
-}	
-
 Session.prototype.join = function( user_id, is_caller ){	
 
 	this.local_user_id = user_id;
@@ -92,6 +69,7 @@ Session.prototype.fb_offerEvent = function( snapshot ){
 		answer.from_user = g_app.session.local_user_id;
 		var json = JSON.stringify(answer);			
 		g_app.session.fb_session.child( 'user' ).child( fromHack ).child( 'answer' ).set( json );					
+		g_app.session.fb_session.child( 'user' ).child( fromHack ).child( 'answer' ).onDisconnect().remove();
     }, pc_console_handler, pc_constraints );
 }
 
@@ -131,7 +109,7 @@ Session.prototype.fb_joinEvent = function( snapshot ){
 	g_app.session.create_and_send_offer( snapshot.name() );	
 }
 
-//-- as a caller we receive an event that a calle has joined
+//-- as a caller we receive an event that a calle has left
 Session.prototype.fb_leaveEvent = function( snapshot ){	
 
 	if( snapshot.name() === g_app.session.local_user_id ){
@@ -143,6 +121,10 @@ Session.prototype.fb_leaveEvent = function( snapshot ){
 	var remote_video = document.getElementById("remote_video_stream");
 	remote_video.src = 0;
 	remote_video.hidden=true;
+	
+	g_app.session.fb_session.child('user').child( g_app.session.local_user_id  ).child( 'ice').remove();	
+	
+	g_app.recyclePeerConnection();	
 }
 
 var toHack;
@@ -173,10 +155,13 @@ Session.prototype.create_and_send_offer = function( to ){
 
 	toHack = to;
 	
+	//clear last ice cache
+	g_app.pc.clearIceCache();
+	
 	g_app.pc.createOffer( function (sessionDescription) {				
 		g_app.pc.setLocalDescription(sessionDescription);	
 		sessionDescription.from_user = g_app.session.local_user_id;
 		var json = JSON.stringify( sessionDescription );		
-		g_app.session.fb_session.child( 'user' ).child( toHack ).child( 'offer' ).set( json );			
+		g_app.session.fb_session.child( 'user' ).child( toHack ).child( 'offer' ).set( json );		
 	}, pc_console_handler, pc_constraints );	
 }

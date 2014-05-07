@@ -87,6 +87,10 @@ PeerConnection.prototype.getIceAsJSON = function(){
 	return JSON.stringify( this.ice_cache );
 }
 
+PeerConnection.prototype.clearIceCache = function(){		
+	this.ice_cache = [];
+}
+
 PeerConnection.prototype.getPeerName = function(){		
 	return this.pc_name;
 }
