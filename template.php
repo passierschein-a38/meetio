@@ -62,7 +62,7 @@ $( window ).unload(function() {
                     <span class="icon-bar"></span>
                 </button>
 				<p class="navbar-brand">
-				Meetio.de - Just Meeting</p>                
+				Meetio.de - Just Meeting | <?php echo "$session_id"; ?></p>                
             </div>
 
             <!-- Collect the nav links, forms, and other content for toggling -->
