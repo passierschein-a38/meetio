@@ -56,6 +56,12 @@ PeerConnection.prototype.addStream = function( stream ){
 }
 
 PeerConnection.prototype.removeStream = function( stream ){		
+
+	if( webrtcDetectedBrowser == "firefox" ){
+		//not yet implemented
+		return;
+	}
+
 	this.pc.removeStream( stream );
 }
 
